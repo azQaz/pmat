@@ -36,6 +36,16 @@
                 sqr.click(x, y);
                 sqr.render(canvas);
             };
+            canvas.onmousemove = function(e) {
+                var x = e.clientX - canvas.offsetLeft;
+                var y = e.clientY - canvas.offsetTop;
+                sqr.mouseMove(x, y);
+                sqr.render(canvas);
+            }
+            canvas.onmouseout = function(e) {
+                sqr.mouseOut();
+                sqr.render(canvas);
+            }
         </script>
     </body>
 </html>

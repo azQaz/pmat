@@ -72,9 +72,21 @@ Square.prototype.render = function (canvas) {
     var cont = canvas.getContext("2d");
     cont.fillStyle = "#000000";
     cont.fillRect(0,0,lst,lst);
-    cont.fillStyle = "#7f7f7f";
+    if(this.onPoint != null) {
+        cont.fillStyle = "#003f00";
+        cont.fillRect(this.onPoint.x * unit_len, 0, unit_len, unit_len * (this.onPoint.x));
+        cont.fillRect(this.onPoint.x * unit_len, unit_len * (this.onPoint.x + 1), unit_len, unit_len * (this.edge - this.onPoint.x));
+        cont.fillStyle = "#00003f";
+        cont.fillRect(0, this.onPoint.x * unit_len, unit_len * this.onPoint.x, unit_len);
+        cont.fillRect(unit_len * (this.onPoint.x + 1), this.onPoint.x * unit_len, unit_len * (this.edge - this.onPoint.x), unit_len);
+    }
     if(this.sp != null) {
-        cont.fillRect(this.sp.x * unit_len, 0, unit_len, unit_len * this.edge);
+        cont.fillStyle = "#005f00";
+        cont.fillRect(this.sp.x * unit_len, 0, unit_len, unit_len * (this.sp.x));
+        cont.fillRect(this.sp.x * unit_len, unit_len * (this.sp.x + 1), unit_len, unit_len * (this.edge - this.sp.x));
+        cont.fillStyle = "#00005f";
+        cont.fillRect(0, this.sp.x * unit_len, unit_len * this.sp.x, unit_len);
+        cont.fillRect(unit_len * (this.sp.x + 1), this.sp.x * unit_len, unit_len * (this.edge - this.sp.x), unit_len);
     }
     cont.fillStyle = "#ffffff";
     for(var c = 0, cc = 0; c < this.edge; c+=1, cc += unit_len) {
@@ -84,7 +96,7 @@ Square.prototype.render = function (canvas) {
             }
         }
     }
-    cont.strokeStyle = "#7f7f7f";
+    cont.strokeStyle = "#ffaaaa";
     cont.lineWidth=1;
     cont.beginPath();
     for(var c = 0, cc = 0; c < this.edge; c+=1, cc += unit_len) {
@@ -132,6 +144,15 @@ Square.prototype.setData = function (n) {
     }
 }
 
+Square.prototype.mouseMove = function(x, y) {
+    this.onPoint = Object();
+    this.onPoint.x = Math.floor(x / unit_len);
+    this.onPoint.y = Math.floor(y / unit_len);
+}
+
+Square.prototype.mouseOut = function(e) {
+    this.onPoint = null;
+}
 Square.prototype.getDataNum = function() {
     return this.dataNum;
 }
