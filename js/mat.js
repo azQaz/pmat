@@ -5,6 +5,10 @@ var data_all = [
     [
         '1 9 5',
         '1 0 1 1 1 0 1 1 0 1 0 1 1 0 1 1 1 0 0 0 0 0 1 0 0 1 0 1 0 1 0 1 0 1 0 1'
+    ].join(' '),
+    [
+        '10 10 7',
+        '1 1 1 0 0 1 0 0 0 0 0 1 1 0 1 0 0 1 1 0 1 1 0 1 0 1 1 1 0 0 0 0 1 1 1 0 0 0 0 1 0 0 1 1 0'
     ].join(' ')
 ]
 
@@ -12,6 +16,7 @@ var Square = function (edge) {
     this.edge = edge;
     this.clicked = false;
     this.sp = null;
+    this.dataNum = 0;
     var ac = ((1+(edge-1))*(edge-1))/2;
     this.data = new Array(ac);
     this.index = new Array(this.edge);
@@ -49,7 +54,6 @@ Square.prototype.setPair = function(a, b, bl) {
     }
     var p = ((r-1)*r)/2+c;
     this.data[p] = bl;
-//    console.log(a+" "+b+" "+"="+bl);
 }
 
 Square.prototype.swapIndex = function (a, b) {
@@ -63,7 +67,8 @@ Square.prototype.swapIndex = function (a, b) {
 
 Square.prototype.render = function (canvas) {
     var lst = unit_len * this.edge;
-    canvas.width = canvas.height = lst;
+    canvas.width = lst;
+    canvas.height = lst;
     var cont = canvas.getContext("2d");
     cont.fillStyle = "#000000";
     cont.fillRect(0,0,lst,lst);
@@ -72,13 +77,10 @@ Square.prototype.render = function (canvas) {
         cont.fillRect(this.sp.x * unit_len, 0, unit_len, unit_len * this.edge);
     }
     cont.fillStyle = "#ffffff";
-    console.log("edge = "+this.edge);
     for(var c = 0, cc = 0; c < this.edge; c+=1, cc += unit_len) {
         for(var r = 0, rr = 0; r < this.edge; r+=1, rr += unit_len ) {
-            console.log(r+","+c);
             if(this.getPair(r,c) == true) {
                 cont.fillRect(rr,cc,unit_len,unit_len);
-//                console.log(r+" "+c+" "+"\n");
             }
         }
     }
@@ -99,14 +101,12 @@ Square.prototype.click = function (x, y) {
         this.sp = Object();
         this.sp.x = Math.floor(x / unit_len);
         this.sp.y = Math.floor(y / unit_len);
-//        console.log("clicked");
         this.clicked = true;
     }
     else if(this.clicked == true) {
         x = Math.floor(x / unit_len);
         y = Math.floor(y / unit_len);
         this.swapIndex(x,this.sp.x);
-//        console.log("swap: "+x+" "+this.sp.x);
         this.sp = null;
         this.clicked = false;
     }
@@ -117,8 +117,8 @@ Square.prototype.setData = function (n) {
     if(d == null)
         return;
     else {
+        this.dataNum = n;
         var list = d.split(' ');
-//        console.log(list);
         this.edge = parseInt(list[1]);
         var ac = ((1+(this.edge-1))*(this.edge-1))/2;
         this.data = new Array(ac);
@@ -129,6 +129,9 @@ Square.prototype.setData = function (n) {
         for(var i = 0; i < this.edge; i += 1) {
             this.index[i] = i;
         }
-//        console.log(this.data.length+"\n"+this.data);
     }
+}
+
+Square.prototype.getDataNum = function() {
+    return this.dataNum;
 }
