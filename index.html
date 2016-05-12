@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>cover</title>
+        <script src="js/mat.js"></script>
+    </head>
+    <body>
+        <canvas id="main_display"></canvas>
+        <script>
+            var canvas = document.getElementById("main_display");
+            var sqr = new Square(7);
+            sqr.setPair(2,3,true);
+            sqr.setPair(4,5,true);
+            sqr.setPair(2,6,true);
+            sqr.setPair(0,2,true);
+            sqr.setData(1);
+            sqr.render(canvas);
+            canvas.onclick = function(e) {
+                var x = e.clientX - canvas.offsetLeft;
+                var y = e.clientY - canvas.offsetTop;
+                sqr.click(x, y);
+                sqr.render(canvas);
+            };
+        </script>
+    </body>
+</html>
