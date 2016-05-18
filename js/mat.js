@@ -31,16 +31,16 @@ var Square = function (edge) {
     for(var i=0;i<ac;i+=1) {
         this.data[i] = false;
     }
-    for(i=0;i<this.edge;++i) {
+    /*for(i=0;i<this.edge;++i) {
         this.index[i] = i;
-    }
+    }*/
 };
 
 Square.prototype.getPair = function (a, b) {
     if(a == b)
         return false;
-    var c = this.index[a];
-    var r = this.index[b];
+    var c = this.index[a][0];
+    var r = this.index[b][0];
     if (c > r) {
         var t = c;
         c = r;
@@ -53,8 +53,8 @@ Square.prototype.getPair = function (a, b) {
 Square.prototype.setPair = function(a, b, bl) {
     if(a == b)
         return;
-    var c = this.index[a];
-    var r = this.index[b];
+    var c = this.index[a][0];
+    var r = this.index[b][0];
     if (c > r) {
         var t = c;
         c = r;
@@ -76,14 +76,14 @@ Square.prototype.swapIndex = function (a, b) {
 Square.prototype.render = function (canvas) {
     var lst = unit_len * this.edge;
     canvas.width = lst;
-    canvas.height = lst;
+    canvas.height = lst + unit_len;
     var cont = canvas.getContext("2d");
     cont.fillStyle = "#000000";
     cont.fillRect(0,0,lst,lst);
     if(this.onPoint != null) {
         cont.fillStyle = "#003f00";
         cont.fillRect(this.onPoint.x * unit_len, 0, unit_len, unit_len * (this.onPoint.x));
-        cont.fillRect(this.onPoint.x * unit_len, unit_len * (this.onPoint.x + 1), unit_len, unit_len * (this.edge - this.onPoint.x));
+        cont.fillRect(this.onPoint.x * unit_len, unit_len * (this.onPoint.x + 1), unit_len, unit_len * (this.edge - this.onPoint.x-1));
         cont.fillStyle = "#00003f";
         cont.fillRect(0, this.onPoint.x * unit_len, unit_len * this.onPoint.x, unit_len);
         cont.fillRect(unit_len * (this.onPoint.x + 1), this.onPoint.x * unit_len, unit_len * (this.edge - this.onPoint.x), unit_len);
@@ -91,18 +91,21 @@ Square.prototype.render = function (canvas) {
     if(this.sp != null) {
         cont.fillStyle = "#005f00";
         cont.fillRect(this.sp.x * unit_len, 0, unit_len, unit_len * (this.sp.x));
-        cont.fillRect(this.sp.x * unit_len, unit_len * (this.sp.x + 1), unit_len, unit_len * (this.edge - this.sp.x));
+        cont.fillRect(this.sp.x * unit_len, unit_len * (this.sp.x + 1), unit_len, unit_len * (this.edge - this.sp.x -1));
         cont.fillStyle = "#00005f";
         cont.fillRect(0, this.sp.x * unit_len, unit_len * this.sp.x, unit_len);
         cont.fillRect(unit_len * (this.sp.x + 1), this.sp.x * unit_len, unit_len * (this.edge - this.sp.x), unit_len);
     }
-    cont.fillStyle = "#ffffff";
+    cont.font = "20px Arial";
     for(var c = 0, cc = 0; c < this.edge; c+=1, cc += unit_len) {
+        cont.fillStyle = "#ffffff";
         for(var r = 0, rr = 0; r < this.edge; r+=1, rr += unit_len ) {
             if(this.getPair(r,c) == true) {
                 cont.fillRect(rr,cc,unit_len,unit_len);
             }
         }
+        cont.fillStyle = "#ff0000";
+        cont.fillText(this.index[c][1],c*unit_len+unit_len/2,lst+unit_len/2);
     }
     cont.strokeStyle = "#ffaaaa";
     cont.lineWidth=1;
@@ -147,7 +150,22 @@ Square.prototype.setData = function (n) {
         }
         this.index = new Array(this.edge);
         for(var i = 0; i < this.edge; i += 1) {
-            this.index[i] = i;
+			var rs = 0;
+			for(var j = 0; j < this.edge; j+=1) {
+                if(i == j)
+                    continue;
+                var c = i;
+                var r = j;
+                if (c > r) {
+                    var t = c;
+                    c = r;
+                    r = t;
+                }
+                var p = ((r-1)*r)/2+c;
+                if(this.data[p])
+                    rs++;
+			}
+            this.index[i] = [i,rs];
         }
     }
 }

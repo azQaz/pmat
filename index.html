@@ -7,6 +7,7 @@
 		<label id="label_level">null</label>
         <canvas id="main_display" style="display:block"></canvas>
 		<button id="last_button">last</button>
+		<select id="choose_select"></select>
 		<button id="next_button">next</button>
         <script>
             var canvas = document.getElementById("main_display");
@@ -14,18 +15,35 @@
 			var button_last = document.getElementById("last_button");
 			var label_level = document.getElementById("label_level");
             var sqr = new Square(7);
+            sqr.setData(1);
+			var slct = document.getElementById("choose_select");
+            
+            for(var l in data_all) {
+                var opt = document.createElement('option');;
+                opt.text = (parseInt(l)+1).toString();
+                slct.add(opt);
+            }
+            slct.onchange = function(e) {
+                sqr.setData(slct.value);
+                label_level.textContent = sqr.getDataNum();
+                sqr.render(canvas);
+            }
 
 			label_level.textContent="1";
             
             button_next.onclick = function(e) {
+                console.log(sqr.getDataNum());
                 sqr.setData(sqr.getDataNum()+1);
+                console.log(sqr.getDataNum());
                 label_level.textContent = sqr.getDataNum();
                 sqr.render(canvas);
+                slct.value = sqr.getDataNum();
             }
             button_last.onclick = function(e) {
                 sqr.setData(sqr.getDataNum()-1);
                 label_level.textContent = sqr.getDataNum();
                 sqr.render(canvas);
+                slct.value = sqr.getDataNum();
             }
 
             sqr.setData(1);
